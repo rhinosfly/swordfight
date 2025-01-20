@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ## @package swordfight
 
 # imports
@@ -37,10 +38,15 @@ manager.add_entity( stage.entity, 'stage')
 # loop
 pr.set_target_fps(60)
 pr.init_window(800,450, 'swordfight')
+
+# only for frame-by-frame
+go = False
+
 while not pr.window_should_close():
-    for player in players:
-        player.update()
-    manager.check_collisions()
+    if go:
+        for player in players:
+            manager.check_collisions()
+            player.update()
 
     pr.begin_drawing()
     pr.clear_background(pr.RAYWHITE)
@@ -49,6 +55,11 @@ while not pr.window_should_close():
     for player in players:
         player.draw()
     pr.draw_text(str(len(manager.overlaps)), 20,20,20, pr.BLACK)
+#    for i in range(len(manager.overlaps)):
+#        pr.draw_text(str(manager.overlaps[i].shape), 20,20*i + 20, 20,pr.BLACK)
     pr.end_drawing()
+    go = True 
+    if pr.is_key_pressed(pr.KEY_SPACE):
+        go = True
 pr.close_window()
 
