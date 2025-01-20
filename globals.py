@@ -1,0 +1,4 @@
+## @package constants
+PLAYER_WIDTH = 20
+PLAYER_HIGHT = 60
+PLAYER_SPEED = 5

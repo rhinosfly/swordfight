@@ -5,7 +5,8 @@
 import pyray as pr
 import entity_manager.entity_manager as em
 import entity_manager.shapes as shapes
-from classes import *
+from players import Player
+from obstacles import Obstacle
 
 # constants
 STAGE_REC = shapes.Rectangle(100,300,600,50)

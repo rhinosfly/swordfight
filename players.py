@@ -1,14 +1,11 @@
-## @package classes
+## @package players
 #
 # the classes used by swordfight
 import pyray as pr
 import entity_manager.shapes as shapes
 import entity_manager.entity_manager as em
+from globals import *
 
-#constants
-PLAYER_WIDTH = 20
-PLAYER_HIGHT = 60
-PLAYER_SPEED = 5
 
 class Player:
     def __init__(self, position, color, key_bindings):
@@ -88,13 +85,4 @@ class Player:
     def draw(self):
         pr.draw_rectangle_rec(self.entity.shape.ctype(), self.color)
         #pr.draw_text(f"{self.position.x}, {self.position.y}", self.position.x, self.position.y, 10, pr.BLACK)
-
-class Obstacle:
-    def __init__(self, color, shape):
-        self.entity = em.Entity(shape)
-        self.color = color
-    def draw(self):
-        pr.draw_rectangle_rec(self.entity.shape.ctype(), self.color)
-        #pr.draw_text(f"{self.entity.shape.x}, {self.entity.shape.y}", self.entity.shape.x, self.entity.shape.y, 10, pr.BLACK)
-
 
