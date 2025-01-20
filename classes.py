@@ -17,8 +17,8 @@ class Player:
         self.position = position
         self.key_bindings = key_bindings
 
-    def update(self, recalculate_func):
-        # move according to keypress
+    ## move according to keypress
+    def do_keypress_actions(self):
         if pr.is_key_down(self.key_bindings['up']):
             self.position.y -= PLAYER_SPEED
         if pr.is_key_down(self.key_bindings['down']):
@@ -27,59 +27,62 @@ class Player:
             self.position.x -= PLAYER_SPEED
         if pr.is_key_down(self.key_bindings['right']):
             self.position.x += PLAYER_SPEED
-        # update rectangle
+            
+    ## update rectangle
+    def update_entity(self):
         self.entity.shape.x = self.position.x
         self.entity.shape.y = self.position.y
-        # recalculate overlaps
-        recalculate_func()
-        edges = { 'up':0,'down':0,'left':0,'right':0 } # shows which edges have collided
-        # account for overlap (collisions)
-        if len(self.entity.overlaps):
-            player = self.entity.shape
-            # find which edges are hitting which shapes
-            for overlap in self.entity.overlaps:
-                shape = overlap.shape
-                if not isinstance(shape, shapes.Rectangle):
-                    continue
-                # find edge to edge distances in every direction
-                buffer = { 'up':0,'down':0,'left':0,'right':0 } # buffer for edge distances for this overlap
-                buffer['up'] = player.y + player.height - shape.y # distance moving down etc.
-                buffer['down'] = shape.y + shape.height - player.y # distance to avoid overlap moving upward
-                buffer['left'] = player.x + player.width - shape.x
-                buffer['right'] = shape.x + shape.width - player.x
-                # find shortest distance
-                #print(buffer)
-                keys = sorted(buffer, key=buffer.get)
-                #print(buffer)
-                #print(keys)
-                key = None
-                value = None
-                for x in keys:
-                    if buffer[x]:
-                        key = x
-                        value = buffer[x]
-                        break
-                #print(key,value)
-                # add shortest distance to edges, if it is larger than previous
-                if value > edges[key]:
-                    edges[key] = value
 
-            # move accordingly
-            if edges['left'] and edges['right']:
-                pass
-            elif edges['left']:
-                self.position.x -= edges['left']
-            elif edges['right']:
-                self.position.x += edges['right']
-            if edges['up'] and edges['down']:
-                pass
-            elif edges['up']:
-                self.position.y -= edges['up']
-            elif edges['down']:
-                self.position.y += edges['down']
-        # update rectangle
-        self.entity.shape.x = self.position.x
-        self.entity.shape.y = self.position.y
+    ## calculate and move for collisions
+    def collide(self):
+        edges = { 'up':0,'down':0,'left':0,'right':0 } # shows which edges have collided
+        player = self.entity.shape
+        # find which edges are hitting which shapes
+        for overlap in self.entity.overlaps:
+            shape = overlap.shape
+            if not isinstance(shape, shapes.Rectangle):
+                continue
+            # find edge to edge distances in every direction
+            buffer = { 'up':0,'down':0,'left':0,'right':0 } # buffer for edge distances for this overlap
+            buffer['up'] = player.y + player.height - shape.y # distance moving down etc.
+            buffer['down'] = shape.y + shape.height - player.y # distance to avoid overlap moving upward
+            buffer['left'] = player.x + player.width - shape.x
+            buffer['right'] = shape.x + shape.width - player.x
+            # find shortest distance
+            keys = sorted(buffer, key=buffer.get)
+            key = None
+            value = None
+            for x in keys:
+                if buffer[x]:
+                    key = x
+                    value = buffer[x]
+                    break
+            # add shortest distance to edges, if it is larger than previous
+            if value > edges[key]:
+                edges[key] = value
+        
+        if edges['left'] and edges['right']:
+            pass
+        elif edges['left']:
+            self.position.x -= edges['left']
+        elif edges['right']:
+            self.position.x += edges['right']
+        if edges['up'] and edges['down']:
+            pass
+        elif edges['up']:
+            self.position.y -= edges['up']
+        elif edges['down']:
+            self.position.y += edges['down']
+        
+
+    ## update self
+    def update(self, recalculate_overlaps):
+        self.do_keypress_actions()
+        self.update_entity()
+        recalculate_overlaps()
+        if len(self.entity.overlaps):
+            self.collide()
+        self.update_entity() 
        
 
     def draw(self):
