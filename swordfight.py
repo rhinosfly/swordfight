@@ -29,7 +29,10 @@ stage = Obstacle(pr.DARKGRAY, STAGE_REC)
 players = [player1, player2]
 obstacles = [stage]
 
-myManager = em.Entity_manager()
+manager = em.Entity_manager()
+manager.add_entity( player1.entity, 'player1')
+manager.add_entity( player2.entity, 'player2')
+manager.add_entity( stage.entity, 'stage')
 
 # loop
 pr.set_target_fps(60)
@@ -37,6 +40,7 @@ pr.init_window(800,450, 'swordfight')
 while not pr.window_should_close():
     for player in players:
         player.update()
+    manager.check_collisions()
 
     pr.begin_drawing()
     pr.clear_background(pr.RAYWHITE)
@@ -44,6 +48,7 @@ while not pr.window_should_close():
         obstacle.draw()
     for player in players:
         player.draw()
+    pr.draw_text(str(len(manager.overlaps)), 20,20,20, pr.BLACK)
     pr.end_drawing()
 pr.close_window()
 
