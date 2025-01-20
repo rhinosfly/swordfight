@@ -23,8 +23,8 @@ P2BINDINGS = {
 
 
 # initialization
-player1 = Player(shapes.Point(0,0), pr.RED, P1BINDINGS)
-player2 = Player(shapes.Point(300,0), pr.BLUE, P2BINDINGS)
+player1 = Player(shapes.Point(0,200), pr.RED, P1BINDINGS)
+player2 = Player(shapes.Point(300,200), pr.BLUE, P2BINDINGS)
 stage = Obstacle(pr.DARKGRAY, STAGE_REC)
 
 players = [player1, player2]
@@ -45,8 +45,7 @@ go = False
 while not pr.window_should_close():
     if go:
         for player in players:
-            manager.check_collisions()
-            player.update()
+            player.update(manager.check_collisions)
 
     pr.begin_drawing()
     pr.clear_background(pr.RAYWHITE)
@@ -54,11 +53,12 @@ while not pr.window_should_close():
         obstacle.draw()
     for player in players:
         player.draw()
-    pr.draw_text(str(len(manager.overlaps)), 20,20,20, pr.BLACK)
-#    for i in range(len(manager.overlaps)):
-#        pr.draw_text(str(manager.overlaps[i].shape), 20,20*i + 20, 20,pr.BLACK)
+    pr.draw_text(str(len(manager.overlaps)), 20,0,20, pr.BLACK)
+    for i in range(len(players)):
+        pr.draw_text(f"{i}:{players[i].position.x},{players[i].position.y}", 20,20*i + 20, 20,pr.BLACK)
     pr.end_drawing()
-    go = True 
+    # toggle for frame-by-frame
+    go = True
     if pr.is_key_pressed(pr.KEY_SPACE):
         go = True
 pr.close_window()
