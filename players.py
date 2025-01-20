@@ -13,6 +13,7 @@ class Player:
         self.color = color
         self.position = position
         self.key_bindings = key_bindings
+        self.weapon = None
 
     ## move according to keypress
     def do_keypress_actions(self):
