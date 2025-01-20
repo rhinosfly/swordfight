@@ -41,27 +41,42 @@ class Player:
                 shape = overlap.shape
                 if not isinstance(shape, shapes.Rectangle):
                     continue
-                if (shape.x == player.x) and (shape.width > edges['left']):
-                    edges['left'] = shape.width
-                if (shape.x + shape.width == player.x + player.width) and (shape.width > edges['right']):
-                    edges['right'] = shape.width
-                if (shape.y == player.y) and (shape.height > edges['up']):
-                    edges['up'] = shape.height
-                if (shape.y + shape.height == player.y + player.height) and (shape.height > edges['down']):
-                    edges['down'] = shape.height
+                # find edge to edge distances in every direction
+                buffer = { 'up':0,'down':0,'left':0,'right':0 } # buffer for edge distances for this overlap
+                buffer['up'] = player.y + player.height - shape.y # distance moving down etc.
+                buffer['down'] = shape.y + shape.height - player.y # distance to avoid overlap moving upward
+                buffer['left'] = player.x + player.width - shape.x
+                buffer['right'] = shape.x + shape.width - player.x
+                # find shortest distance
+                #print(buffer)
+                keys = sorted(buffer, key=buffer.get)
+                #print(buffer)
+                #print(keys)
+                key = None
+                value = None
+                for x in keys:
+                    if buffer[x]:
+                        key = x
+                        value = buffer[x]
+                        break
+                #print(key,value)
+                # add shortest distance to edges, if it is larger than previous
+                if value > edges[key]:
+                    edges[key] = value
+
             # move accordingly
             if edges['left'] and edges['right']:
                 pass
             elif edges['left']:
-                self.position.x += edges['left']
+                self.position.x -= edges['left']
             elif edges['right']:
-                self.position.x -= edges['right']
+                self.position.x += edges['right']
             if edges['up'] and edges['down']:
                 pass
             elif edges['up']:
-                self.position.y += edges['up']
+                self.position.y -= edges['up']
             elif edges['down']:
-                self.position.y -= edges['down']
+                self.position.y += edges['down']
         # update rectangle
         self.entity.shape.x = self.position.x
         self.entity.shape.y = self.position.y
