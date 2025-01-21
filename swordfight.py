@@ -26,9 +26,10 @@ P2BINDINGS = {
 
 
 # initialization
-player1 = Player(shapes.Point(200,200), pr.RED, P1BINDINGS)
-player2 = Player(shapes.Point(500,200), pr.BLUE, P2BINDINGS)
+player1 = Player(shapes.Point(200,200), pr.RED, P1BINDINGS, RIGHT)
+player2 = Player(shapes.Point(500,200), pr.BLUE, P2BINDINGS, LEFT)
 sword1 = Sword(shapes.Point(200,200), LEFT)
+player1.weapon = sword1
 stage = Obstacle(pr.DARKGRAY, STAGE_REC)
 
 players = [player1, player2]

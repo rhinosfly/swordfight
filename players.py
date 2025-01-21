@@ -8,9 +8,10 @@ from globals import *
 
 
 class Player:
-    def __init__(self, position, color, key_bindings):
+    def __init__(self, position, color, key_bindings, direction):
         self.entity = em.Entity(shapes.Rectangle(position.x,position.y,PLAYER_WIDTH, PLAYER_HIGHT))
         self.color = color
+        self.direction = direction
         self.position = position
         self.key_bindings = key_bindings
         self.weapon = None
@@ -23,8 +24,10 @@ class Player:
             self.position.y += PLAYER_SPEED
         if pr.is_key_down(self.key_bindings['left']):
             self.position.x -= PLAYER_SPEED
+            self.direction = LEFT
         if pr.is_key_down(self.key_bindings['right']):
             self.position.x += PLAYER_SPEED
+            self.direction = RIGHT
             
     ## update rectangle
     def update_entity(self):
@@ -71,6 +74,11 @@ class Player:
             self.position.y -= edges['up']
         elif edges['down']:
             self.position.y += edges['down']
+
+    ## update weapon
+    def update_weapon(self, weapon):
+        weapon.set_direction(self.direction)
+        weapon.set_position(self.position)
         
 
     ## update self
@@ -80,6 +88,8 @@ class Player:
         recalculate_overlaps()
         if len(self.entity.overlaps):
             self.collide()
+        if self.weapon:
+            self.update_weapon(self.weapon)
         self.update_entity() 
        
 

@@ -26,10 +26,12 @@ class Sword(Weapon):
         self.angle = self.set_angle(SWORD_ANGLE)
         self.color = pr.GRAY
         self.state = State.OWNED
-        self.entity = em.Entity(Sword.get_points(self.position, self.length, self.angle))
+        self.entity = em.Entity(self.get_line())
     ## using position and length, return shapes.Line
-    def get_points(position, length, angle):
-        print(angle)
+    def get_line(self):
+        position = self.position
+        angle = self.angle
+        length = self.length
         p1 = position
         width = math.cos(angle) * length
         height = math.sin(angle) * length
@@ -41,16 +43,20 @@ class Sword(Weapon):
     ## call to move sword to position
     def set_position(self, point):
         self.position = point
+        print(self.position)
         return self.position
     def set_angle(self, angle):
         self.angle = angle * self.direction - math.pi/2
+        print(self.angle)
         return self.angle
     def set_direction(self, direction):
         self.direction = direction
+        print(self.direction)
+        self.set_angle(self.angle)
         return self.direction
     ## update self
     def update(self):
-        pass
+       em.Entity.shape = self.get_line() 
     ## draw self
     def draw(self):
         pr.draw_line_v(self.entity.shape.p1.ctype(), self.entity.shape.p2.ctype(), self.color)
